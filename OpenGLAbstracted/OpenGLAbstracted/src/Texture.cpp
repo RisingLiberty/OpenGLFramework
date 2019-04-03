@@ -37,10 +37,48 @@ Texture::Texture(const std::string& path)
 	// which can be used to store bulk data on the GPU. an example of another use for textures is storing certain
 	// terrain information.
 	glGenTextures(1, &m_Id);
+	this->Bind();
 
 	// Just like other objects, textures have to be bound to apply operations on them.
 	// Since images are 2D arrays of pixels, it will be bound to the GL_TEXTURE_2D target.
 
+	this->LoadData(path);
+	this->LoadDefaultParameters();
+
+	// As mentioned before, OpenGL expects the first pixel to be located in the bottom-left corner, 
+	// which means that textures will be flipped when loaded with STB directly. To counteract that, the code 
+	// will use flipped Y coordinates for texture coordinates from now on.
+	// That means that (0,0) will be assumed to be the top0left corner instead of the bottom-left. This practice might
+	// make texture coordinates more intuitive as a side-effect.
+	
+	// But how is the pixel array itself established? Textures in graphics applications will usually be a lot more sophisticated than simple patterns and
+	// will be loaded from files. Best practice is to ave your files in a format that is natively supported by the hardware, but it may sometimes be more convenient to load
+	// textures from common image formats like JPG and PNG. Unfortunately OpenGL doesn't offer any helper functions to load pixels from these image files, 
+	// but that's where third-party libraries come in handy again!
+}
+
+Texture::~Texture()
+{
+	glDeleteTextures(1, &m_Id);
+}
+
+void Texture::Bind()
+{
+	glBindTexture(GL_TEXTURE_2D, m_Id);
+}
+
+void Texture::Unbind()
+{
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+unsigned int Texture::GetId() const
+{
+	return m_Id;
+}
+
+void Texture::LoadData(const std::string& path)
+{
 	// The pixels in the texture will be addressed using texture coordinates during drawing operations.
 	// These coordinates range from 0.0 to 1.0 where (0,0) is conventionally the bottom-left corner and (1,1) is the top right corner of the texture image.
 	// The operation that uses these texture coordinates to retrieve color information from the pixels is called sampling.
@@ -65,20 +103,51 @@ Texture::Texture(const std::string& path)
 	// the functions begins loading the image at coordinate (0,0) so pay attention to this.
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 	stbi_image_free(data);
+}
 
+void Texture::LoadDefaultParameters()
+{
+	this->SetWrapMode(TextureWrapType::CLAMP_TO_EDGE);
+	this->SetBorderColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+	this->SetFilterMode(FilteringMode::LINEAR);
+}
+
+void Texture::SetWrapMode(TextureWrapType wrapType)
+{
 	// The first thing you'll have to consider is how the texture should be sampled when a coordinate outside the range of 0 to 1 is given. 
 	// OpenGL offers 4 ways of handling this.
 	// GL_REPEAT: The integer part of the coordinate will be ignored and a repeating pattern is formed.
 	// GL_MIRROERED_REPEAT: The texture will also be repeated, but it will be mirrored when the integer part of the coordinate is odd.
 	// GL_CLAMP_TO_EDGE: the coordinate will simply be clamped between 0 and 1.
 	// GL_CLAMP_TO_BORDER: the coordinates that fall outside the range will be given a specified border color.
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	switch (wrapType)
+	{
+	case TextureWrapType::REPEAT:
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		break;
+	case TextureWrapType::MIRROR_REPEAT:
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+		break;
+	case TextureWrapType::CLAMP_TO_EDGE:
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		break;
+	case TextureWrapType::CLAMP_TO_BORDER:
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+		break;
+	}
+}
 
-	// and you want to change the border color, you need to change the value of GL_TEXTURE_BORDER_COLOR bypassing an RGBA float array
-	float color[] = { 1.0f, 0.0f, 0.0f, 1.0f };
-	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, color);
+void Texture::SetBorderColor(const glm::vec4& color)
+{
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, &color.x);
+}
 
+void Texture::SetFilterMode(FilteringMode mode)
+{
 	// Since texture coordinates are resolution independent, they won't always match a pixel exactly.
 	// this happens when a texture image is stretched beyond its original size or when it's sized down. OpenGL offers various methods to decide
 	// on the sampled color when this happens. This process is called filtering and the following methods are available.
@@ -99,38 +168,23 @@ Texture::Texture(const std::string& path)
 	// GL_NEAREST_MIPMAP_LINEAR: Uses the 2 mipmaps that most closely match the size of the pixel being textures
 	// and samples with nearest neighbor interpolation.
 	// GL_LINEAR_MIPMAP_LINEAR: Samples closet two mipmaps with linear 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	// As mentioned before, OpenGL expects the first pixel to be located in the bottom-left corner, 
-	// which means that textures will be flipped when loaded with STB directly. To counteract that, the code 
-	// will use flipped Y coordinates for texture coordinates from now on.
-	// That means that (0,0) will be assumed to be the top0left corner instead of the bottom-left. This practice might
-	// make texture coordinates more intuitive as a side-effect.
-	
-	// But how is the pixel array itself established? Textures in graphics applications will usually be a lot more sophisticated than simple patterns and
-	// will be loaded from files. Best practice is to ave your files in a format that is natively supported by the hardware, but it may sometimes be more convenient to load
-	// textures from common image formats like JPG and PNG. Unfortunately OpenGL doesn't offer any helper functions to load pixels from these image files, 
-	// but that's where third-party libraries come in handy again!
-	this->Bind();
-}
-
-Texture::~Texture()
-{
-	glDeleteTextures(1, &m_Id);
-}
-
-void Texture::Bind()
-{
-	glBindTexture(GL_TEXTURE_2D, m_Id);
-}
-
-void Texture::Unbind()
-{
-	glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-unsigned int Texture::GetId() const
-{
-	return m_Id;
+	switch (mode)
+	{
+	case FilteringMode::NEAREST:
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		break;
+	case FilteringMode::LINEAR:
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		break;
+	case FilteringMode::NEAREST_MIPMAP:
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+		break;
+	case FilteringMode::NEAREST_MIPMAP_LINEAR:
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+		break;
+	}
 }
