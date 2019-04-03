@@ -4,7 +4,7 @@ class RenderBuffer
 {
 public:
 	RenderBuffer(int width, int height);
-
+	~RenderBuffer();
 	void Bind();
 	void Unbind();
 

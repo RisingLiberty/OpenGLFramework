@@ -14,6 +14,11 @@ RenderBuffer::RenderBuffer(int width, int height)
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
 }
 
+RenderBuffer::~RenderBuffer()
+{
+	glDeleteRenderbuffers(1, &m_Id);
+}
+
 void RenderBuffer::Bind()
 {
 	glBindRenderbuffer(GL_RENDERBUFFER, m_Id);
