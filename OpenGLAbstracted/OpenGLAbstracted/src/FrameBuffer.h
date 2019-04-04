@@ -12,6 +12,8 @@ public:
 	void AttachColorBuffer(const Texture& texture);
 	void AttachRenderBuffer(const RenderBuffer& renderBuffer);
 
+	bool IsComplete() const;
+
 	void Bind();
 	void Unbind();
 

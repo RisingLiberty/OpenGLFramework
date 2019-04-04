@@ -37,6 +37,12 @@ void FrameBuffer::AttachRenderBuffer(const RenderBuffer& renderBuffer)
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBuffer.GetId());
 }
 
+bool FrameBuffer::IsComplete() const
+{
+	//this framebuffer needs to be bound to check this
+	return glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
+}
+
 void FrameBuffer::Bind()
 {
 	// You can check if a framebuffer is complete at any time by calling glCheckFramebufferStatus and check if it returns GL_FRAMEBUFFER_COMPLETE.
