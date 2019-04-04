@@ -1,6 +1,16 @@
 #include "Uniform.h"
 
-Uniform::Uniform()
+Uniform::Uniform() :
+	m_Location(-1),
+	m_Name(""),
+	m_Type(UniformType::UNDEFINED)
+{
+}
+
+Uniform::Uniform(int location, const std::string& name, UniformType type):
+	m_Location(location),
+	m_Name(name),
+	m_Type(type)
 {
 
 }

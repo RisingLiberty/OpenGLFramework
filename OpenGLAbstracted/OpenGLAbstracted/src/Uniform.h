@@ -15,14 +15,18 @@ enum class UniformType
 	DOUBLE,
 	VEC2,
 	VEC3,
+	VEC4,
 	MAT3,
-	MAT4
+	MAT4,
+
+	UNDEFINED
 };
 
 class Uniform
 {
 public:
 	Uniform();
+	Uniform(int location, const std::string& name, UniformType type);
 	~Uniform();
 
 	int GetLocation() const;
@@ -33,4 +37,4 @@ private:
 	int m_Location;
 	std::string m_Name;
 	UniformType m_Type;
-};
+}; 

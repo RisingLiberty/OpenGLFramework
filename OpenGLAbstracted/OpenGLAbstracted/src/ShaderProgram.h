@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <map>
 #include <list>
 
 #include <GLEW/glew.h>
@@ -9,6 +10,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Uniform.h"
 
 class ShaderProgram
 {
@@ -79,6 +81,11 @@ public:
 	}
 
 private:
+	void StoreUniform(int location, const std::string& name);
+	UniformType GetUniformType(int location);
+
+private:
 	unsigned int m_Id;
 	std::list<unsigned int> m_AttachedShaders;
+	std::map<std::string, Uniform> m_Uniforms;
 };
