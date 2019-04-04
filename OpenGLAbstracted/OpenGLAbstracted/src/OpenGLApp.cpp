@@ -34,6 +34,12 @@ int OpenGLApp::Start()
 int OpenGLApp::Initialize()
 {
 	m_Timer.Start();
+	
+	std::cout << "OpenGL version: " << m_Context.GetVersion() << "\n";
+	std::cout << "Renderer: " << m_Context.GetRenderer() << "\n";
+	std::cout << "Vender: " << m_Context.GetVendor() << "\n";
+	std::cout << "Shading language version: " << m_Context.GetShadingLanguageVersion() << "\n";
+
 	return 0;
 }
 
@@ -52,7 +58,7 @@ void OpenGLApp::MainLoop()
 		this->OutputFrameStats();
 
 
-		//RenderTarget renderTarget(WIDTH, HEIGHT);
+		RenderTarget renderTarget(WIDTH, HEIGHT);
 
 		// Swap buffers
 		m_Window.Display();
