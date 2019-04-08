@@ -90,4 +90,5 @@ UniformType ShaderProgram::GetUniformType(int location)
 	case GL_FLOAT_MAT3:		return UniformType::MAT3; break;
 	case GL_FLOAT_MAT4:		return UniformType::MAT4; break;
 	}
+	return UniformType::UNDEFINED;
 }
