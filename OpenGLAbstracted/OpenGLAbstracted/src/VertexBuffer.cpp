@@ -24,7 +24,10 @@ void VertexBuffer::Unbind()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void VertexBuffer::SetData(size_t size, void* vertices)
+void VertexBuffer::SetData(void* vertices, size_t size)
 {
+	m_Data = vertices;
+	m_Size = size;
+
 	glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
 }
