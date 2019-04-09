@@ -105,7 +105,7 @@ void Texture::LoadData(const std::string& path)
 	// It is safe to say that you will never hit this limit in even the most extreme graphics applications
 	int width, height;
 	unsigned char* data;
-
+	stbi_set_flip_vertically_on_load(true);
 	data = stbi_load(path.c_str(), &width, &height, nullptr, STBI_rgb);
 
 	// The first parameter after the texture target is the level of detail, where 0 is the base image.

@@ -39,40 +39,40 @@ namespace
 	float cubeVertices[] = {
 		// 	Position	    		   Color			  UV
 		//bottom
-	-0.5f,  0.5f, -0.5f,	 0.8f, 0.0f, 0.0f,	 0.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f,	 0.5f, 0.0f, 0.0f,	 1.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,	 0.5f, 0.0f, 0.0f,	 1.0f, 0.0f,
-	-0.5f, -0.5f, -0.5f,	 0.5f, 0.0f, 0.0f,	 0.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,	 0.0f, 0.0f, 0.0f,	 1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f,	 0.0f, 0.0f, 0.0f,	 0.0f, 0.0f,
+	 0.5f, -0.5f, -0.5f,	 0.0f, 0.0f, 0.0f,	 0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,	 0.0f, 0.0f, 0.0f,	 1.0f, 1.0f,
 
 	//top
-	-0.5f,  0.5f,  0.5f,	 0.5f, 0.0f, 0.0f,	 0.0f, 1.0f, //red corner
-	 0.5f,  0.5f,  0.5f,	 0.5f, 0.0f, 0.0f,	 1.0f, 1.0f, //middle
-	 0.5f, -0.5f,  0.5f,	 0.0f, 0.0f, 0.0f,	 1.0f, 0.0f, //blue corner
-	-0.5f, -0.5f,  0.5f,	 0.5f, 0.0f, 0.0f,	 0.0f, 0.0f, //middle
+	-0.5f,  0.5f,  0.5f,	 0.0f, 0.0f, 0.0f,	 1.0f, 0.0f, //red corner
+	 0.5f,  0.5f,  0.5f,	 0.0f, 0.0f, 0.0f,	 0.0f, 0.0f, //middle
+	 0.5f, -0.5f,  0.5f,	 0.0f, 0.0f, 0.0f,	 0.0f, 1.0f, //blue corner
+	-0.5f, -0.5f,  0.5f,	 0.0f, 0.0f, 0.0f,	 1.0f, 1.0f, //middle
 
 	//Left
-	-0.5f, -0.5f, -0.5f,	 0.5f, 0.0f, 0.0f,	 0.0f, 1.0f,
-	-0.5f,  0.5f, -0.5f,	 0.8f, 0.0f, 0.0f,	 1.0f, 1.0f,
-	-0.5f,  0.5f,  0.5f,	 0.5f, 0.0f, 0.0f,	 1.0f, 0.0f,
-	-0.5f, -0.5f,  0.5f,	 0.5f, 0.0f, 0.0f,	 0.0f, 0.0f,
+	-0.5f, -0.5f, -0.5f,	 0.0f, 0.0f, 0.0f,	 1.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,	 0.0f, 0.0f, 0.0f,	 0.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,	 0.0f, 0.0f, 0.0f,	 0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,	 0.0f, 0.0f, 0.0f,	 1.0f, 1.0f,
 
 	//right						
-	 0.5f, -0.5f,  0.5f,	 0.0f, 0.0f, 1.0f,	 0.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,	 0.5f, 0.0f, 1.0f,	 1.0f, 0.0f,
-	 0.5f,  0.5f, -0.5f,	 0.5f, 0.0f, 1.0f,	 1.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,	 0.5f, 0.0f, 1.0f,	 0.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,	 0.0f, 0.0f, 0.0f,	 1.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,	 0.0f, 0.0f, 0.0f,	 0.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,	 0.0f, 0.0f, 0.0f,	 0.0f, 0.0f,
+	 0.5f, -0.5f, -0.5f,	 0.0f, 0.0f, 0.0f,	 1.0f, 0.0f,
 
 	 //back
-	 -0.5f, -0.5f,  0.5f,	 0.5f, 0.0f, 0.0f,	 0.0f, 0.0f,
-	  0.5f, -0.5f,  0.5f,	 0.0f, 0.0f, 0.0f,	 1.0f, 0.0f,
-	  0.5f, -0.5f, -0.5f,	 0.5f, 0.0f, 0.0f,	 1.0f, 1.0f,
-	 -0.5f, -0.5f, -0.5f,	 0.5f, 0.0f, 0.0f,	 0.0f, 1.0f,
+	 -0.5f, -0.5f,  0.5f,	 0.0f, 0.0f, 0.0f,	 1.0f, 1.0f,
+	  0.5f, -0.5f,  0.5f,	 0.0f, 0.0f, 0.0f,	 0.0f, 1.0f,
+	  0.5f, -0.5f, -0.5f,	 0.0f, 0.0f, 0.0f,	 0.0f, 0.0f,
+	 -0.5f, -0.5f, -0.5f,	 0.0f, 0.0f, 0.0f,	 1.0f, 0.0f,
 
 	 //front					 
-	 -0.5f,  0.5f, -0.5f,	 0.8f, 0.0f, 0.0f,	 0.0f, 1.0f,
-	  0.5f,  0.5f, -0.5f,	 0.5f, 0.0f, 0.0f,	 1.0f, 1.0f,
-	  0.5f,  0.5f,  0.5f,	 0.5f, 0.0f, 0.0f,	 1.0f, 0.0f,
-	 -0.5f,  0.5f,  0.5f,	 0.5f, 0.0f, 0.0f,	 0.0f, 0.0f,
+	 -0.5f,  0.5f, -0.5f,	 0.0f, 0.0f, 0.0f,	 1.0f, 0.0f,
+	  0.5f,  0.5f, -0.5f,	 0.0f, 0.0f, 0.0f,	 0.0f, 0.0f,
+	  0.5f,  0.5f,  0.5f,	 0.0f, 0.0f, 0.0f,	 0.0f, 1.0f,
+	 -0.5f,  0.5f,  0.5f,	 0.0f, 0.0f, 0.0f,	 1.0f, 1.0f
 	};
 
 	GLuint cubeIndices[]
@@ -230,7 +230,7 @@ void OpenGLApp::MainLoop()
 
 		glEnable(GL_DEPTH_TEST);
 		
-		renderTarget.Unbind();
+		renderTarget.Bind();
 		
 		vaoCube.Bind();
 		program.Bind();
@@ -258,17 +258,16 @@ void OpenGLApp::MainLoop()
 		// draw regular cube
 		//glDrawArrays(GL_TRIANGLES, 0, 36);
 		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-		//renderTarget.Unbind();
+		renderTarget.Unbind();
 		
 		vaoQuad.Bind();
 		glDisable(GL_DEPTH_TEST);
 		screenProgram.Bind();
 
-		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		// Swap buffers
 		m_Window.Display();
-
 	}
 }
 
