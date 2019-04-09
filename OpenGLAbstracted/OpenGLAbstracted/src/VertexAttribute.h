@@ -4,6 +4,8 @@
 
 enum class VertexAttributeType
 {
+	UNDEFINED,
+
 	UNSIGNED_INT,
 	INT,
 	FLOAT,
@@ -20,6 +22,9 @@ public:
 	const std::string& GetName() const;
 	VertexAttributeType GetType() const;
 	unsigned char GetSize() const;
+
+	int GetOpenGLType() const;
+	size_t GetOpenGLCount() const;
 
 private:
 	std::string m_Name;
