@@ -2,20 +2,22 @@
 
 
 RenderTarget::RenderTarget(int width, int height):
-	m_FrameBuffer(),
-	m_ColorBuffer(width, height),
-	m_DepthStencilBuffer(width, height)
+	FrameBuffer(),
+	ColorBuffer(width, height),
+	DepthStencilBuffer(width, height)
 {
-	m_FrameBuffer.AttachColorBuffer(m_ColorBuffer);
-	m_FrameBuffer.AttachRenderBuffer(m_DepthStencilBuffer);
+	FrameBuffer.AttachColorBuffer(ColorBuffer);
+	FrameBuffer.AttachRenderBuffer(DepthStencilBuffer);
 }
 
 void RenderTarget::Bind()
 {
-	m_FrameBuffer.Bind();
+	FrameBuffer.Bind();
 }
 
 void RenderTarget::Unbind()
 {
-	m_FrameBuffer.Unbind();
+	FrameBuffer.Unbind();
+	ColorBuffer.Activate(0);
+	ColorBuffer.Bind();
 }

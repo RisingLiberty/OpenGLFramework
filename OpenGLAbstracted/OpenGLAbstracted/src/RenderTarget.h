@@ -4,7 +4,7 @@
 #include "FrameBuffer.h"
 #include "Texture.h"
 
-class RenderTarget
+struct RenderTarget
 {
 public:
 	RenderTarget(int width, int height);
@@ -12,8 +12,7 @@ public:
 	void Bind();
 	void Unbind();
 
-private:
-	FrameBuffer m_FrameBuffer;
-	Texture m_ColorBuffer;
-	RenderBuffer m_DepthStencilBuffer;
+	FrameBuffer FrameBuffer;
+	Texture ColorBuffer;
+	RenderBuffer DepthStencilBuffer;
 };
