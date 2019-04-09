@@ -2,20 +2,37 @@
 
 #include "VertexBuffer.h"
 
+#include <GLEW/glew.h>
+#include <GLFW/glfw3.h>
+
+#include <cassert>
+
 InputAssembler::InputAssembler():
-	m_VertexBuffer(nullptr),
-	m_IndexBuffer(nullptr),
-	m_InputLayout(),
-	m_Topology(PrimitiveTopology::UNDEFINED)
+	VertexBuffer(nullptr),
+	IndexBuffer(nullptr),
+	InputLayout(),
+	Topology(PrimitiveTopology::UNDEFINED)
 {
 
 }
 
-InputAssembler::InputAssembler(VertexBuffer* vertexBuffer, IndexBuffer* indexBuffer, const InputLayout& inputLayout, PrimitiveTopology primitiveTopology) :
-	m_VertexBuffer(vertexBuffer),
-	m_IndexBuffer(indexBuffer),
-	m_InputLayout(inputLayout),
-	m_Topology(primitiveTopology)
+InputAssembler::InputAssembler(class VertexBuffer* vertexBuffer, class IndexBuffer* indexBuffer, const class InputLayout& inputLayout, PrimitiveTopology primitiveTopology):
+	VertexBuffer(vertexBuffer),
+	IndexBuffer(indexBuffer),
+	InputLayout(inputLayout),
+	Topology(primitiveTopology)
 {
 
+}
+
+int InputAssembler::ToOpenGLTopology() const
+{
+	switch (Topology)
+	{
+	case PrimitiveTopology::TRIANGLE_LIST:
+		return GL_TRIANGLES;
+	}
+
+	assert(false);
+	return GL_FALSE;
 }
