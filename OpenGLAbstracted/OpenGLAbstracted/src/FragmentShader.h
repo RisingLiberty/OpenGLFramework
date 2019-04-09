@@ -4,5 +4,6 @@
 
 class FragmentShader : public Shader
 {
+public:
 	FragmentShader(const std::string& source);
 };

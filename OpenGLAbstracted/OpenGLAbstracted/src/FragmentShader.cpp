@@ -17,5 +17,4 @@ FragmentShader::FragmentShader(const std::string& source) :
 	glShaderSource(m_Id, 1, &sourceRaw, nullptr);
 
 	this->Compile();
-
 }
