@@ -11,12 +11,15 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Uniform.h"
+#include "VertexAttribute.h"
 
 class ShaderProgram
 {
 public:
 	ShaderProgram();
 	~ShaderProgram();
+	void SpecifyAttribute(const VertexAttribute& attribute, size_t stride, size_t offset);
+	void SpecifyAttribute(const std::string& name, int type, unsigned int count, size_t stride, size_t offset);
 	void Link();
 	void Bind();
 	void UnBind();
@@ -24,12 +27,15 @@ public:
 	void Detachshader(unsigned int shaderId);
 	void BindFragDataLocation(unsigned int colorNumber, const std::string& name);
 
+	unsigned int GetId() const;
+
 	unsigned int GetUniformLocation(const std::string& name);
-	
+	unsigned int GetAttributeLocation(const std::string& name);
+
 	template<typename T>
 	void SetUniform(const std::string& name, const T& value)
 	{
-		static_assert(false, "");
+		static_assert(false, "Implementation of uniform setting not defined!");
 	}
 
 	template<>
@@ -87,5 +93,7 @@ private:
 private:
 	unsigned int m_Id;
 	std::list<unsigned int> m_AttachedShaders;
+	
+	std::map<std::string, unsigned int> m_Attributes;
 	std::map<std::string, Uniform> m_Uniforms;
 };

@@ -12,6 +12,21 @@ ShaderProgram::~ShaderProgram()
 	glDeleteProgram(m_Id);
 }
 
+void ShaderProgram::SpecifyAttribute(const VertexAttribute& attribute, size_t stride, size_t offset)
+{
+	SpecifyAttribute(attribute.GetName(), attribute.GetOpenGLType(), attribute.GetOpenGLCount(), stride, offset);
+}
+
+void ShaderProgram::SpecifyAttribute(const std::string& name, int type, unsigned int count, size_t stride, size_t offset)
+{
+	int attribLocation = this->GetAttributeLocation(name);
+	if (attribLocation == -1)
+		return;
+
+	glEnableVertexAttribArray(attribLocation);
+	glVertexAttribPointer(attribLocation, count, type, GL_FALSE, stride, (void*)offset);
+}
+
 void ShaderProgram::AttachShader(unsigned int shaderId)
 {
 	glAttachShader(m_Id, shaderId);
@@ -44,6 +59,11 @@ void ShaderProgram::BindFragDataLocation(unsigned int colorNumber, const std::st
 	glBindFragDataLocation(m_Id, colorNumber, name.c_str());
 }
 
+unsigned int ShaderProgram::GetId() const
+{
+	return m_Id;
+}
+
 unsigned int ShaderProgram::GetUniformLocation(const std::string& name)
 {
 	if (m_Uniforms.find(name) != m_Uniforms.cend())
@@ -57,6 +77,20 @@ unsigned int ShaderProgram::GetUniformLocation(const std::string& name)
 		this->StoreUniform(loc, name);
 
 
+	return loc;
+}
+
+unsigned int ShaderProgram::GetAttributeLocation(const std::string& name)
+{
+	if (m_Attributes.find(name) != m_Attributes.end())
+		return m_Attributes[name];
+
+	GLint loc = glGetAttribLocation(m_Id, name.c_str());
+
+	if (loc == -1)
+		std::cout << "warning in shader with id " << m_Id << "\nAttribute with name " << name << " has -1 as location\n";
+
+	m_Attributes[name] = loc;
 	return loc;
 }
 
