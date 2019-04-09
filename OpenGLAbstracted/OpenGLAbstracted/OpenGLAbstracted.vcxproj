@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Context.cpp" />
+    <ClCompile Include="src\FileReader.cpp" />
     <ClCompile Include="src\FragmentShader.cpp" />
     <ClCompile Include="src\FrameBuffer.cpp" />
     <ClCompile Include="src\GlobalTimer.cpp" />
@@ -164,6 +165,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Context.h" />
+    <ClInclude Include="src\FileReader.h" />
     <ClInclude Include="src\FragmentShader.h" />
     <ClInclude Include="src\FrameBuffer.h" />
     <ClInclude Include="src\GlobalTimer.h" />
