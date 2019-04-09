@@ -5,6 +5,7 @@
 ShaderProgram::ShaderProgram()
 {
 	m_Id = glCreateProgram();
+	this->Bind();
 }
 
 ShaderProgram::~ShaderProgram()
