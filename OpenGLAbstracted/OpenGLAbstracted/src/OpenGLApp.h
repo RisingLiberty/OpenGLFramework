@@ -15,6 +15,7 @@ private:
 
 	int Initialize();
 	void MainLoop();
+
 	void OutputFrameStats() const;
 private:
 	Window m_Window;

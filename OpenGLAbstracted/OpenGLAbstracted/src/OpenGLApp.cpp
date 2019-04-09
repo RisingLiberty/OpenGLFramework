@@ -12,6 +12,7 @@
 #include "VertexAttribute.h"
 #include "InputAssembler.h"
 #include "Vertex.h"
+#include "RenderBuffer.h"
 
 #include <iostream>
 #include <iomanip>
@@ -19,11 +20,93 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+//#define STB_IMAGE_IMPLEMENTATION
+#include <stb/stb_image.h>
+
 namespace
 {
 	int WIDTH = 800;
 	int HEIGHT = 600;
 
+	float quadVertices[] =
+	{
+		-1.0f,  1.0f,  0.0f, 1.0f,
+		 1.0f,  1.0f,  1.0f, 1.0f,
+		 1.0f, -1.0f,  1.0f, 0.0f,
+		-1.0f, -1.0f,  0.0f, 0.0f
+	};
+
+	float cubeVertices[] = {
+		// 	Position	    		   Color			  UV
+		//bottom
+	-0.5f,  0.5f, -0.5f,	 0.8f, 0.0f, 0.0f,	 0.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,	 0.5f, 0.0f, 0.0f,	 1.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,	 0.5f, 0.0f, 0.0f,	 1.0f, 0.0f,
+	-0.5f, -0.5f, -0.5f,	 0.5f, 0.0f, 0.0f,	 0.0f, 0.0f,
+
+	//top
+	-0.5f,  0.5f,  0.5f,	 0.5f, 0.0f, 0.0f,	 0.0f, 1.0f, //red corner
+	 0.5f,  0.5f,  0.5f,	 0.5f, 0.0f, 0.0f,	 1.0f, 1.0f, //middle
+	 0.5f, -0.5f,  0.5f,	 0.0f, 0.0f, 0.0f,	 1.0f, 0.0f, //blue corner
+	-0.5f, -0.5f,  0.5f,	 0.5f, 0.0f, 0.0f,	 0.0f, 0.0f, //middle
+
+	//Left
+	-0.5f, -0.5f, -0.5f,	 0.5f, 0.0f, 0.0f,	 0.0f, 1.0f,
+	-0.5f,  0.5f, -0.5f,	 0.8f, 0.0f, 0.0f,	 1.0f, 1.0f,
+	-0.5f,  0.5f,  0.5f,	 0.5f, 0.0f, 0.0f,	 1.0f, 0.0f,
+	-0.5f, -0.5f,  0.5f,	 0.5f, 0.0f, 0.0f,	 0.0f, 0.0f,
+
+	//right						
+	 0.5f, -0.5f,  0.5f,	 0.0f, 0.0f, 1.0f,	 0.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,	 0.5f, 0.0f, 1.0f,	 1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f,	 0.5f, 0.0f, 1.0f,	 1.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,	 0.5f, 0.0f, 1.0f,	 0.0f, 1.0f,
+
+	 //back
+	 -0.5f, -0.5f,  0.5f,	 0.5f, 0.0f, 0.0f,	 0.0f, 0.0f,
+	  0.5f, -0.5f,  0.5f,	 0.0f, 0.0f, 0.0f,	 1.0f, 0.0f,
+	  0.5f, -0.5f, -0.5f,	 0.5f, 0.0f, 0.0f,	 1.0f, 1.0f,
+	 -0.5f, -0.5f, -0.5f,	 0.5f, 0.0f, 0.0f,	 0.0f, 1.0f,
+
+	 //front					 
+	 -0.5f,  0.5f, -0.5f,	 0.8f, 0.0f, 0.0f,	 0.0f, 1.0f,
+	  0.5f,  0.5f, -0.5f,	 0.5f, 0.0f, 0.0f,	 1.0f, 1.0f,
+	  0.5f,  0.5f,  0.5f,	 0.5f, 0.0f, 0.0f,	 1.0f, 0.0f,
+	 -0.5f,  0.5f,  0.5f,	 0.5f, 0.0f, 0.0f,	 0.0f, 0.0f,
+	};
+
+	GLuint cubeIndices[]
+	{
+		// Bottom
+		0,1,2,
+		2,3,0,
+
+		// Top
+		4,5,6,
+		6,7,4,
+
+		// Left
+		8,9,10,
+		10,11,8,
+
+		// Right
+		12,13,14,
+		14,15,12,
+
+		// Front
+		16,17,18,
+		18,19,16,
+
+		// Back
+		20,21,22,
+		22,23,20
+	};
+
+	GLuint Quadindices[]
+	{
+		0,1,2,
+		2,3,0
+	};
 }
 
 OpenGLApp::OpenGLApp() :
@@ -48,7 +131,7 @@ int OpenGLApp::Start()
 int OpenGLApp::Initialize()
 {
 	m_Timer.Start();
-	
+
 	std::cout << "OpenGL version: " << m_Context.GetVersion() << "\n";
 	std::cout << "Renderer: " << m_Context.GetRenderer() << "\n";
 	std::cout << "Vender: " << m_Context.GetVendor() << "\n";
@@ -59,98 +142,134 @@ int OpenGLApp::Initialize()
 
 void OpenGLApp::MainLoop()
 {
-	bool running = true;
-	int timer = 1;
+	auto t_start = std::chrono::high_resolution_clock::now();
 
-	std::string vs = FileReader::ReadFile("../data/shaders/src/defaultvertexshader.glsl");
-	std::string fs = FileReader::ReadFile("../data/shaders/src/defaultfragmentshader.glsl");
+	VertexArray vaoCube, vaoQuad;
 
-	// Create Vertex Array Object
-	VertexBuffer va;
+	VertexBuffer vboCube(cubeVertices, sizeof(cubeVertices));
+	VertexBuffer vboQuad(quadVertices, sizeof(quadVertices));
 
-	GLfloat vertices[] = {
-		-0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,// Top-left
-		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,// Top-right
-		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,// Bottom-right
-		-0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f// Bottom-left
-	};
+	IndexBuffer iboCube(cubeIndices, sizeof(cubeIndices), IndexBufferFormat::UINT32);
+	IndexBuffer iboQuad(Quadindices, sizeof(Quadindices), IndexBufferFormat::UINT32);
 
-	VertexBuffer vb(vertices, sizeof(vertices));
+	// Create shader programs
+	GLuint sceneVertexShader, sceneFragmentShader, sceneShaderProgram;
 
-	GLushort indices[] = {
-		0, 1, 2,
-		2, 3, 0
-	};
-
-	IndexBuffer ib(indices, sizeof(indices), IndexBufferFormat::UINT16);
-
-	VertexShader vertexShader(vs);
-	FragmentShader fragmentShader(fs);
+	VertexShader vs(FileReader::ReadFile("../data/shaders/src/defaultvertextextureshader.glsl"));
+	FragmentShader fs(FileReader::ReadFile("../data/shaders/src/defaultfragmenttextureshader.glsl"));
 
 	ShaderProgram program;
-	program.AttachShader(vertexShader.GetId());
-	program.AttachShader(fragmentShader.GetId());
+	program.AttachShader(vs.GetId());
+	program.AttachShader(fs.GetId());
 	program.Link();
+
+	sceneVertexShader = vs.GetId();
+	sceneFragmentShader = fs.GetId();
+	sceneShaderProgram = program.GetId();
+
+	GLuint screenVertexShader, screenFragmentShader, screenShaderProgram;
+
+	VertexShader screenVs(FileReader::ReadFile("../data/shaders/src/defaultscreenvertexshader.glsl"));
+	FragmentShader screenFs(FileReader::ReadFile("../data/shaders/src/defaultscreenfragmentshader.glsl"));
+
+	ShaderProgram screenProgram;
+	screenProgram.AttachShader(screenVs.GetId());
+	screenProgram.AttachShader(screenFs.GetId());
+	screenProgram.Link();
+	
+	screenVertexShader = screenVs.GetId();
+	screenFragmentShader = screenFs.GetId();
+	screenShaderProgram = screenProgram.GetId();
+
+	// Specify the layout of the vertex data
+	vaoCube.Bind();
+	vboCube.Bind();
+	iboCube.Bind();
+	
+	program.SpecifyAttribute(VertexAttribute("position", VertexAttributeType::VEC3), 8 * sizeof(float), 0);
+	program.SpecifyAttribute(VertexAttribute("color", VertexAttributeType::VEC3), 8 * sizeof(float), 3 * sizeof(float));
+	program.SpecifyAttribute(VertexAttribute("texcoord", VertexAttributeType::VEC2), 8 * sizeof(float), 6 * sizeof(float));
+	
+	vaoQuad.Bind();
+	vboQuad.Bind();
+	iboQuad.Bind();
+
+	screenProgram.SpecifyAttribute(VertexAttribute("position", VertexAttributeType::VEC2), 4 * sizeof(float), 0);
+	screenProgram.SpecifyAttribute(VertexAttribute("texcoord", VertexAttributeType::VEC2), 4 * sizeof(float), 2 * sizeof(float));
+
+	// Load textures
+	Texture texHalo("../Data/Textures/HaloInfinite.png");
+	Texture texGoogle("../Data/Textures/img.png");
+
 	program.Bind();
+	program.SetUniform("texHalo", 0);
+	program.SetUniform("texGoogle", 1);
 
-	InputLayout inputLayout;
-	inputLayout.AddAttribute(VertexAttribute("position", VertexAttributeType::VEC2));
-	inputLayout.AddAttribute(VertexAttribute("color", VertexAttributeType::VEC3));
-	inputLayout.AddAttribute(VertexAttribute("texcoord", VertexAttributeType::VEC2));
+	glm::mat4 view = glm::lookAt(glm::vec3(0, 3, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	glm::mat4 proj = glm::perspective(glm::radians(45.0f), (float)WIDTH / (float)HEIGHT, 1.0f, 10.0f);
 
-	size_t vertexSize = inputLayout.GetSize();
-	const std::vector<VertexAttribute> attributes = inputLayout.GetAttributes();
+	program.SetUniform("view", view);
+	program.SetUniform("proj", proj);
 
-	GLint count;
-	glGetProgramiv(program.GetId(), GL_ACTIVE_ATTRIBUTES, &count);
+	screenProgram.Bind();
+	screenProgram.SetUniform("texFramebuffer", 0);
 
-	GLint size; // size of the variable
-	GLenum type; // type of the variable (float, vec3 or mat4, etc)
+	GLint uniModel = program.GetUniformLocation("model");
 
-	const GLsizei bufSize = 16; // maximum name length
-	GLchar name[bufSize]; // variable name in GLSL
-	GLsizei length; // name length
+	RenderTarget renderTarget(WIDTH, HEIGHT);
 
-	for (int i = 0; i < count; ++i)
-	{
-		glGetActiveAttrib(program.GetId(), i, bufSize, &length, &size, &type, name);
-		std::cout << "attribute: " << i << " type: " << type << " name: " << name << std::endl;
-	}
+	bool running = true;
 
-	size_t offset = 0;
-	for (VertexAttribute attribute : attributes)
-	{
-		program.SpecifyAttribute(attribute, vertexSize, offset);
-		offset += attribute.GetSize();
-	}
-
-	InputAssembler ia;
-	ia.VertexBuffer = &vb;
-	ia.IndexBuffer = &ib;
-	ia.Topology = PrimitiveTopology::TRIANGLE_LIST;
-	ia.InputLayout = inputLayout;
+	//glPolygonMode(GL_FRONT, GL_LINE);
+	//glPolygonMode(GL_BACK, GL_LINE);
 
 	while (running)
 	{
-		// Poll events of window
 		if (m_Window.EventLoop() == WindowEvent::CLOSED)
 			running = false;
 
-		m_Timer.Tick();
+		glEnable(GL_DEPTH_TEST);
+		
+		renderTarget.Unbind();
+		
+		vaoCube.Bind();
+		program.Bind();
 
+		texHalo.Activate(0);
+		texHalo.Bind();
+
+		texGoogle.Activate(1);
+		texGoogle.Bind();
+
+		//Clear the screen to white
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// this->OutputFrameStats();
+		// Calculate transformation
+		// The values of uniforms are changed with any of the glUnifromXY functions, where X is the number of
+		// components and Y is the type. Common types are f(float), d(double) and i(integer)
+		auto t_now = std::chrono::high_resolution_clock::now();
+		float time = std::chrono::duration_cast<std::chrono::duration<float>>(t_now - t_start).count();
 
-		//program.Bind();
+		glm::mat4 model = glm::rotate(glm::mat4(1.0f), time * 0.5f * glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		//model = glm::mat4(1.0f);
+		program.SetUniform("model", model);
 
-		glDrawElements(ia.ToOpenGLTopology(), ib.GetCount(), ib.ToOpenGLFormat(), 0);
+		// draw regular cube
+		//glDrawArrays(GL_TRIANGLES, 0, 36);
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		//renderTarget.Unbind();
+		
+		vaoQuad.Bind();
+		glDisable(GL_DEPTH_TEST);
+		screenProgram.Bind();
+
+		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		// Swap buffers
 		m_Window.Display();
-	}
 
-	m_Window.Close();
+	}
 }
 
 void OpenGLApp::OutputFrameStats() const
