@@ -11,7 +11,8 @@ Window::Window(const std::string& title, int width, int height, int style):
 	settings.stencilBits = 8;
 	settings.majorVersion = 3;
 	settings.minorVersion = 2;
-
+	settings.antialiasingLevel = 4;
+	
 	m_Window = std::make_unique<sf::Window>(sf::VideoMode(width, height, 32), title, style, settings);
 }
 
