@@ -3,10 +3,19 @@
 #include <GLEW/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "Vertex.h"
+
 VertexBuffer::VertexBuffer()
 {
 	glGenBuffers(1, &m_Id);
 	this->Bind();
+}
+
+VertexBuffer::VertexBuffer(void* data, size_t size)
+{
+	glGenBuffers(1, &m_Id);
+	this->Bind();
+	this->SetData(data, size);
 }
 
 VertexBuffer::~VertexBuffer()
