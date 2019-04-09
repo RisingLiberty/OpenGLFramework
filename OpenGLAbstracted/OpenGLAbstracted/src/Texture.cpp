@@ -25,7 +25,7 @@ Texture::Texture(int width, int height)
 	// Since this is the image for the color buffer, the format and internalFormat parameters are a bit more restricted
 	// the format parameter will typically be limited to either GL_RGB or GL_RGBA and the internalFormat to the color formats.
 	// The resolution doesn't have to match the one of the default framebuffer but don't forget a glViewport call if you decide to vary.
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
@@ -62,6 +62,12 @@ Texture::~Texture()
 	glDeleteTextures(1, &m_Id);
 }
 
+void Texture::Activate(unsigned int idx)
+{
+	glActiveTexture(GL_TEXTURE0 + idx);
+	m_TextureUnit = idx;
+}
+
 void Texture::Bind()
 {
 	glBindTexture(GL_TEXTURE_2D, m_Id);
@@ -75,6 +81,16 @@ void Texture::Unbind()
 unsigned int Texture::GetId() const
 {
 	return m_Id;
+}
+
+void Texture::SetTextureUnit(unsigned int unit)
+{
+	m_TextureUnit = unit;
+}
+
+unsigned int Texture::GetTextureUnit() const
+{
+	return m_TextureUnit;
 }
 
 void Texture::LoadData(const std::string& path)

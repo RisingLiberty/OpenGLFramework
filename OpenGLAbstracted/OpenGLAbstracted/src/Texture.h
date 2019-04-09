@@ -27,6 +27,7 @@ public:
 	Texture(const std::string& path);
 	~Texture();
 
+	void Activate(unsigned int idx = 0);
 	void Bind();
 	void Unbind();
 	
@@ -36,9 +37,12 @@ public:
 	void SetWrapMode(TextureWrapType wrapType);
 	void SetBorderColor(const glm::vec4& color);
 	void SetFilterMode(FilteringMode mode);
+	void SetTextureUnit(unsigned int unit);
 
 	unsigned int GetId() const;
+	unsigned int GetTextureUnit() const;
 
 private:
 	unsigned int m_Id;
+	unsigned int m_TextureUnit;
 };
