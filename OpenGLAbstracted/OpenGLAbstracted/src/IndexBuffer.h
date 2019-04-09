@@ -9,6 +9,7 @@ enum class IndexBufferFormat
 class IndexBuffer
 {
 public: 
+	IndexBuffer();
 	IndexBuffer(void* data, size_t size, IndexBufferFormat format);
 	~IndexBuffer();
 
@@ -21,7 +22,10 @@ public:
 	unsigned int GetId() const;
 	void* GetData() const;
 	size_t GetSize() const;
+	size_t GetCount() const;
 	IndexBufferFormat GetFormat() const;
+
+	int ToOpenGLFormat() const;
 
 private:
 	unsigned int m_Id;

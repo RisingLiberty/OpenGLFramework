@@ -3,13 +3,20 @@
 #include <GLEW/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <cassert>
+
+IndexBuffer::IndexBuffer()
+{
+	glGenBuffers(1, &m_Id);
+	this->Bind();
+}
+
 IndexBuffer::IndexBuffer(void* data, size_t size, IndexBufferFormat format):
-	m_Data(data),
-	m_Size(size),
 	m_Format(format)
 {
 	glGenBuffers(1, &m_Id);
 	this->Bind();
+	this->SetBuffer(data, size);
 }
 
 IndexBuffer::~IndexBuffer()
@@ -54,7 +61,28 @@ size_t IndexBuffer::GetSize() const
 	return m_Size;
 }
 
+size_t IndexBuffer::GetCount() const
+{
+	if (m_Format == IndexBufferFormat::UINT16)
+		return m_Size / sizeof(uint16_t);
+	else
+		return m_Size / sizeof(uint32_t);
+}
+
 IndexBufferFormat IndexBuffer::GetFormat() const
 {
 	return m_Format;
+}
+
+int IndexBuffer::ToOpenGLFormat() const
+{
+	switch (m_Format)
+	{
+	case IndexBufferFormat::UINT16:
+		return GL_UNSIGNED_SHORT;
+	case IndexBufferFormat::UINT32:
+		return GL_UNSIGNED_INT;
+	}
+	
+	assert(false);
 }
